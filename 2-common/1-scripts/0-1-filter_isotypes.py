@@ -14,3 +14,5 @@ with open("../../1-data/CelegansStrainData.tsv", "r") as file:
 
 for isotype in isotypes:
         subprocess.run(["cp", f"../../1-data/1-raw/strain_bams/{isotype}.bam.bai", f"../../1-data/2-isotypes/"])
+	subprocess.run(["cp", f"../../1-data/1-raw/strain_bams/{isotype}.bam", f"../../1-data/2-isotypes/"])
+
