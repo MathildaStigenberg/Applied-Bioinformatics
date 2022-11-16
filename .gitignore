@@ -2,9 +2,9 @@
 
 2-common/3-results/
 
-2-common/4-gatk-workflows/cromwell-executions/
+#2-common/4-gatk-workflows/cromwell-executions/
 
-2-common/4-gatk-workflows/
+#2-common/4-gatk-workflows/
 
 3-shuai/3-results/
 
