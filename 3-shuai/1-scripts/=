@@ -1,0 +1,462 @@
+Script started on Tue 15 Nov 2022 11:32:59 AM CET
+ _   _ ____  ____  __  __    _    __  __
+| | | |  _ \|  _ \|  \/  |  / \   \ \/ /   | System:    rackham2
+| | | | |_) | |_) | |\/| | / _ \   \  /    | User:      shuai
+| |_| |  __/|  __/| |  | |/ ___ \  /  \    | 
+ \___/|_|   |_|   |_|  |_/_/   \_\/_/\_\   | 
+
+###############################################################################
+
+        User Guides: http://www.uppmax.uu.se/support/user-guides
+        FAQ: http://www.uppmax.uu.se/support/faq
+
+        Write to support@uppmax.uu.se, if you have questions or comments.
+
+
+Active notices for rackham:
+[37;41m
+  Issues with Crex (/proj, /sw, /sw/data) on Rackham and Snowy
+  http://status.uppmax.uu.se/2022-11-13/crex-problem/
+[0m
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[?1034h[shuai@rackham2 1-scripts]$ ls
+=		mutect.sh     test.sh
+index-bams.sh	shift-ref.sh  vis-depth.sh
+index-fasta.sh	test.py       wg2mt.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls
+=		mutect.sh     test.sh
+index-bams.sh	shift-ref.sh  vis-depth.sh
+index-fasta.sh	test.py       wg2mt.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ rm [K[K[Kin[K[K. index-fasta.sh
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.00 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index -p ref-mt /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+[main] Real time: 0.031 sec; CPU: 0.014 sec
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . index-fasta.sh
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.00 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index -p ref-mt /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+[main] Real time: 0.034 sec; CPU: 0.012 sec
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls
+=		ref-mt.amb  ref-mt.sa	  vis-depth.sh
+index-bams.sh	ref-mt.ann  shift-ref.sh  wg2mt.sh
+index-fasta.sh	ref-mt.bwt  test.py
+mutect.sh	ref-mt.pac  test.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ rm ref-t[Kmt*
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls
+=		mutect.sh     test.sh
+index-bams.sh	shift-ref.sh  vis-depth.sh
+index-fasta.sh	test.py       wg2mt.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ lsrm ref-mt*ls[K. index-fasta.sh
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.01 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+[main] Real time: 0.073 sec; CPU: 0.015 sec
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls
+=		mutect.sh     test.sh
+index-bams.sh	shift-ref.sh  vis-depth.sh
+index-fasta.sh	test.py       wg2mt.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . shift-ref.sh 
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar ShiftFasta -R ../../1-data/006-reference/ref-mt.fa -O ../../1-data/006-reference/ref-mt-shift.fa --shift-back-output ../../1-data/006-reference/shift-back.chain
+11:42:40.643 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar!/com/intel/gkl/native/libgkl_compression.so
+11:42:41.632 INFO  ShiftFasta - ------------------------------------------------------------
+11:42:41.633 INFO  ShiftFasta - The Genome Analysis Toolkit (GATK) v4.3.0.0
+11:42:41.633 INFO  ShiftFasta - For support and documentation go to https://software.broadinstitute.org/gatk/
+11:42:41.635 INFO  ShiftFasta - Executing as shuai@rackham2.uppmax.uu.se on Linux v3.10.0-1160.76.1.el7.x86_64 amd64
+11:42:41.635 INFO  ShiftFasta - Java runtime: Java HotSpot(TM) 64-Bit Server VM v1.8.0_151-b12
+11:42:41.636 INFO  ShiftFasta - Start Date/Time: November 15, 2022 11:42:40 AM CET
+11:42:41.636 INFO  ShiftFasta - ------------------------------------------------------------
+11:42:41.636 INFO  ShiftFasta - ------------------------------------------------------------
+11:42:41.637 INFO  ShiftFasta - HTSJDK Version: 3.0.1
+11:42:41.638 INFO  ShiftFasta - Picard Version: 2.27.5
+11:42:41.638 INFO  ShiftFasta - Built for Spark Version: 2.4.5
+11:42:41.638 INFO  ShiftFasta - HTSJDK Defaults.COMPRESSION_LEVEL : 2
+11:42:41.638 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_READ_FOR_SAMTOOLS : false
+11:42:41.638 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_SAMTOOLS : true
+11:42:41.638 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_TRIBBLE : false
+11:42:41.638 INFO  ShiftFasta - Deflater: IntelDeflater
+11:42:41.638 INFO  ShiftFasta - Inflater: IntelInflater
+11:42:41.639 INFO  ShiftFasta - GCS max retries/reopens: 20
+11:42:41.639 INFO  ShiftFasta - Requester pays: disabled
+11:42:41.639 WARN  ShiftFasta - 
+
+[1m[31m   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+   Warning: ShiftFasta is a BETA tool and is not yet ready for use in production
+
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!![0m
+
+
+11:42:41.639 INFO  ShiftFasta - Initializing engine
+11:42:41.706 INFO  ShiftFasta - Shutting down engine
+[November 15, 2022 11:42:41 AM CET] org.broadinstitute.hellbender.tools.walkers.fasta.ShiftFasta done. Elapsed time: 0.02 minutes.
+Runtime.totalMemory()=2284322816
+***********************************************************************
+
+A USER ERROR has occurred: Fasta dict file file:///crex/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts/../../1-data/006-reference/ref-mt.dict for reference file:///crex/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts/../../1-data/006-reference/ref-mt.fa does not exist. Please see http://gatkforums.broadinstitute.org/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference for help creating it.
+
+***********************************************************************
+Set the system property GATK_STACKTRACE_ON_USER_EXCEPTION (--java-options '-DGATK_STACKTRACE_ON_USER_EXCEPTION=true') to print the stack trace.
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls
+=		mutect.sh     test.sh
+index-bams.sh	shift-ref.sh  vis-depth.sh
+index-fasta.sh	test.py       wg2mt.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ rm shift-ref.sh 
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ touch shift-ref.sh
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . shift-ref.sh 
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar ShiftFasta -R /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa -O /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/shift-ref-mt.fa --shift-back-output /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/shift-back.chain
+11:48:02.955 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar!/com/intel/gkl/native/libgkl_compression.so
+11:48:03.837 INFO  ShiftFasta - ------------------------------------------------------------
+11:48:03.838 INFO  ShiftFasta - The Genome Analysis Toolkit (GATK) v4.3.0.0
+11:48:03.838 INFO  ShiftFasta - For support and documentation go to https://software.broadinstitute.org/gatk/
+11:48:03.902 INFO  ShiftFasta - Executing as shuai@rackham2.uppmax.uu.se on Linux v3.10.0-1160.76.1.el7.x86_64 amd64
+11:48:03.902 INFO  ShiftFasta - Java runtime: Java HotSpot(TM) 64-Bit Server VM v1.8.0_151-b12
+11:48:03.902 INFO  ShiftFasta - Start Date/Time: November 15, 2022 11:48:02 AM CET
+11:48:03.903 INFO  ShiftFasta - ------------------------------------------------------------
+11:48:03.903 INFO  ShiftFasta - ------------------------------------------------------------
+11:48:03.904 INFO  ShiftFasta - HTSJDK Version: 3.0.1
+11:48:03.904 INFO  ShiftFasta - Picard Version: 2.27.5
+11:48:03.904 INFO  ShiftFasta - Built for Spark Version: 2.4.5
+11:48:03.905 INFO  ShiftFasta - HTSJDK Defaults.COMPRESSION_LEVEL : 2
+11:48:03.905 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_READ_FOR_SAMTOOLS : false
+11:48:03.905 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_SAMTOOLS : true
+11:48:03.905 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_TRIBBLE : false
+11:48:03.906 INFO  ShiftFasta - Deflater: IntelDeflater
+11:48:03.906 INFO  ShiftFasta - Inflater: IntelInflater
+11:48:03.906 INFO  ShiftFasta - GCS max retries/reopens: 20
+11:48:03.906 INFO  ShiftFasta - Requester pays: disabled
+11:48:03.906 WARN  ShiftFasta - 
+
+[1m[31m   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+   Warning: ShiftFasta is a BETA tool and is not yet ready for use in production
+
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!![0m
+
+
+11:48:03.907 INFO  ShiftFasta - Initializing engine
+11:48:03.915 INFO  ShiftFasta - Shutting down engine
+[November 15, 2022 11:48:03 AM CET] org.broadinstitute.hellbender.tools.walkers.fasta.ShiftFasta done. Elapsed time: 0.02 minutes.
+Runtime.totalMemory()=2305818624
+***********************************************************************
+
+A USER ERROR has occurred: Fasta dict file file:///proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.dict for reference file:///proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa does not exist. Please see http://gatkforums.broadinstitute.org/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference for help creating it.
+
+***********************************************************************
+Set the system property GATK_STACKTRACE_ON_USER_EXCEPTION (--java-options '-DGATK_STACKTRACE_ON_USER_EXCEPTION=true') to print the stack trace.
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ ls[K[Kmodule list
+
+Currently Loaded Modules:
+  1) uppmax          4) samtools/1.14
+  2) bioinfo-tools   5) java/sun_jdk1.8.0_151
+  3) bwa/0.7.17      6) GATK/4.3.0.0
+
+ 
+
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ gatk-launch CreateSequenceDictionar y -R ref.fasta
+bash: gatk-launch: command not found
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ gatk-launch CreateSequenceDictionaryy -R ref.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary [1P[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -[1P[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -R[1P ref.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -R [1Pref.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -R r[1Pef.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -R re[1Pf.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C CreateSequenceDictionary -R ref[1P.fasta[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar CreateSequenceDictionary -R ref.fasta
+^C]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . index-
+bash: index-: No such file or directory
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . index-fasta.sh 
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.00 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+[main] Real time: 0.067 sec; CPU: 0.014 sec
+bash: gatk-launch: command not found
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . index-fasta.sh 
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.00 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+[main] Real time: 0.033 sec; CPU: 0.012 sec
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar CreateSequenceDictionary -R /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+INFO	2022-11-15 11:50:23	CreateSequenceDictionary	Output dictionary will be written in /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.dict
+11:50:23.346 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar!/com/intel/gkl/native/libgkl_compression.so
+[Tue Nov 15 11:50:23 CET 2022] CreateSequenceDictionary --REFERENCE /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa --TRUNCATE_NAMES_AT_WHITESPACE true --NUM_SEQUENCES 2147483647 --VERBOSITY INFO --QUIET false --VALIDATION_STRINGENCY STRICT --COMPRESSION_LEVEL 2 --MAX_RECORDS_IN_RAM 500000 --CREATE_INDEX false --CREATE_MD5_FILE false --GA4GH_CLIENT_SECRETS client_secrets.json --help false --version false --showHidden false --USE_JDK_DEFLATER false --USE_JDK_INFLATER false
+[Tue Nov 15 11:50:24 CET 2022] Executing as shuai@rackham2.uppmax.uu.se on Linux 3.10.0-1160.76.1.el7.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.8.0_151-b12; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: Version:4.3.0.0
+[Tue Nov 15 11:50:24 CET 2022] picard.sam.CreateSequenceDictionary done. Elapsed time: 0.01 minutes.
+Runtime.totalMemory()=2303197184
+Tool returned:
+0
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . shift-ref.sh 
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar ShiftFasta -R /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa -O /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/shift-ref-mt.fa --shift-back-output /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/shift-back.chain
+11:50:48.752 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar!/com/intel/gkl/native/libgkl_compression.so
+11:50:49.716 INFO  ShiftFasta - ------------------------------------------------------------
+11:50:49.716 INFO  ShiftFasta - The Genome Analysis Toolkit (GATK) v4.3.0.0
+11:50:49.716 INFO  ShiftFasta - For support and documentation go to https://software.broadinstitute.org/gatk/
+11:50:49.718 INFO  ShiftFasta - Executing as shuai@rackham2.uppmax.uu.se on Linux v3.10.0-1160.76.1.el7.x86_64 amd64
+11:50:49.718 INFO  ShiftFasta - Java runtime: Java HotSpot(TM) 64-Bit Server VM v1.8.0_151-b12
+11:50:49.719 INFO  ShiftFasta - Start Date/Time: November 15, 2022 11:50:48 AM CET
+11:50:49.719 INFO  ShiftFasta - ------------------------------------------------------------
+11:50:49.719 INFO  ShiftFasta - ------------------------------------------------------------
+11:50:49.801 INFO  ShiftFasta - HTSJDK Version: 3.0.1
+11:50:49.802 INFO  ShiftFasta - Picard Version: 2.27.5
+11:50:49.802 INFO  ShiftFasta - Built for Spark Version: 2.4.5
+11:50:49.802 INFO  ShiftFasta - HTSJDK Defaults.COMPRESSION_LEVEL : 2
+11:50:49.803 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_READ_FOR_SAMTOOLS : false
+11:50:49.803 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_SAMTOOLS : true
+11:50:49.803 INFO  ShiftFasta - HTSJDK Defaults.USE_ASYNC_IO_WRITE_FOR_TRIBBLE : false
+11:50:49.804 INFO  ShiftFasta - Deflater: IntelDeflater
+11:50:49.804 INFO  ShiftFasta - Inflater: IntelInflater
+11:50:49.804 INFO  ShiftFasta - GCS max retries/reopens: 20
+11:50:49.804 INFO  ShiftFasta - Requester pays: disabled
+11:50:49.805 WARN  ShiftFasta - 
+
+[1m[31m   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+   Warning: ShiftFasta is a BETA tool and is not yet ready for use in production
+
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!![0m
+
+
+11:50:49.805 INFO  ShiftFasta - Initializing engine
+11:50:51.210 INFO  ShiftFasta - Done initializing engine
+11:50:51.219 INFO  ProgressMeter - Starting traversal
+11:50:51.219 INFO  ProgressMeter -        Current Locus  Elapsed Minutes     Records Processed   Records/Minute
+11:50:51.236 INFO  ProgressMeter -             unmapped              0.0                     0              0.0
+11:50:51.236 INFO  ProgressMeter - Traversal complete. Processed 0 total records in 0.0 minutes.
+11:50:51.239 INFO  ShiftFasta - Shutting down engine
+[November 15, 2022 11:50:51 AM CET] org.broadinstitute.hellbender.tools.walkers.fasta.ShiftFasta done. Elapsed time: 0.04 minutes.
+Runtime.totalMemory()=2284847104
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ . shift-ref.sh [2@index-fasta[C[C[C[C
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+Note that all versions of GATK starting with 4.0.8.0 use a different wrapper
+script (gatk) than previous versions of GATK.  You might need to update your
+jobs accordingly.
+
+The complete GATK resource bundle is in /sw/data/GATK
+
+See 'module help GATK/4.3.0.0' for information on activating the GATK conda
+environment for using DetermineGermlineContigPloidy and similar other tools.
+[bwa_index] Pack FASTA... 0.00 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 0.00 seconds elapse.
+[bwa_index] Update BWT... 0.00 sec
+[bwa_index] Pack forward-only FASTA... 0.00 sec
+[bwa_index] Construct SA from BWT and Occ... 0.00 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/shift-ref-mt.fa
+[main] Real time: 0.085 sec; CPU: 0.014 sec
+Using GATK jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar
+Running:
+    java -Dsamjdk.use_async_io_read_samtools=false -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=false -Dsamjdk.compression_level=2 -jar /sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar CreateSequenceDictionary -R /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa
+INFO	2022-11-15 11:52:17	CreateSequenceDictionary	Output dictionary will be written in /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.dict
+11:52:17.923 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/sw/bioinfo/GATK/4.3.0.0/rackham/gatk-package-4.3.0.0-local.jar!/com/intel/gkl/native/libgkl_compression.so
+[Tue Nov 15 11:52:18 CET 2022] CreateSequenceDictionary --REFERENCE /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.fa --TRUNCATE_NAMES_AT_WHITESPACE true --NUM_SEQUENCES 2147483647 --VERBOSITY INFO --QUIET false --VALIDATION_STRINGENCY STRICT --COMPRESSION_LEVEL 2 --MAX_RECORDS_IN_RAM 500000 --CREATE_INDEX false --CREATE_MD5_FILE false --GA4GH_CLIENT_SECRETS client_secrets.json --help false --version false --showHidden false --USE_JDK_DEFLATER false --USE_JDK_INFLATER false
+[Tue Nov 15 11:52:18 CET 2022] Executing as shuai@rackham2.uppmax.uu.se on Linux 3.10.0-1160.76.1.el7.x86_64 amd64; Java HotSpot(TM) 64-Bit Server VM 1.8.0_151-b12; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: Version:4.3.0.0
+[Tue Nov 15 11:52:18 CET 2022] picard.sam.CreateSequenceDictionary done. Elapsed time: 0.01 minutes.
+Runtime.totalMemory()=2337800192
+To get help, see http://broadinstitute.github.io/picard/index.html#GettingHelp
+picard.PicardException: /proj/snic2022-6-224/private/Applied-Bioinformatics/1-data/006-reference/ref-mt.dict already exists.  Delete this file and try again, or specify a different output file.
+	at picard.sam.CreateSequenceDictionary.doWork(CreateSequenceDictionary.java:220)
+	at picard.cmdline.CommandLineProgram.instanceMain(CommandLineProgram.java:309)
+	at org.broadinstitute.hellbender.cmdline.PicardCommandLineProgramExecutor.instanceMain(PicardCommandLineProgramExecutor.java:37)
+	at org.broadinstitute.hellbender.Main.runCommandLineProgram(Main.java:160)
+	at org.broadinstitute.hellbender.Main.mainEntry(Main.java:203)
+	at org.broadinstitute.hellbender.Main.main(Main.java:289)
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai/1-scripts[shuai@rackham2 1-scripts]$ cd ..
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/3-shuai[shuai@rackham2 3-shuai]$ cd ..
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics[shuai@rackham2 Applied-Bioinformatics]$ ls
+1-data	2-common  3-shuai  4-mathilda  5-hanna	README.md
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics[shuai@rackham2 Applied-Bioinformatics]$ c [Kd 2-common/
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common[shuai@rackham2 2-common]$ ls
+1-scripts  2-logs  3-results  4-gatk-workflows
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common[shuai@rackham2 2-common]$ cd 4-gatk-workflows/
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows[shuai@rackham2 4-gatk-workflows]$ ls
+cromwell-33.1.jar  gatk4-mitochondria-pipeline
+]0;shuai@rackham2:/proj/snic2022-6-224/private/Applied-B
