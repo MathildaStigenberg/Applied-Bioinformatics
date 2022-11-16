@@ -1,0 +1,31 @@
+#!/bin/bash
+
+cd /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution
+tmpDir=$(mkdir -p "/crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/tmp.89ecc64a" && echo "/crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/tmp.89ecc64a")
+
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution
+
+)
+(
+cd /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution
+
+
+echo "hello world"
+)  > '/crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution/stdout' 2> '/crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution/stderr'
+echo $? > /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution
+find . -type d -empty -print | xargs -I % touch %/.file
+)
+(
+cd /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution
+sync
+
+
+)
+mv /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution/rc.tmp /crex/proj/snic2022-6-224/private/Applied-Bioinformatics/2-common/4-gatk-workflows/cromwell-executions/myWorkflow/b85151bf-416a-4841-8315-941c8bbe6d83/call-myTask/execution/rc

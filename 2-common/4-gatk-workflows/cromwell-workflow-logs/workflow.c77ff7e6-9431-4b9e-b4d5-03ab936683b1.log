@@ -1,0 +1,2 @@
+2022-11-16 10:25:05,115 INFO  - MaterializeWorkflowDescriptorActor [UUID(c77ff7e6)]: Parsing workflow as WDL draft-2
+2022-11-16 10:25:08,001 INFO  - MaterializeWorkflowDescriptorActor [UUID(c77ff7e6)]: Call-to-Backend assignments: myWorkflow.myTask -> singularity
