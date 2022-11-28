@@ -5,7 +5,8 @@ import csv
 import glob
 import sys
 
-# Path to all the files (*.gz) in the haplotypecaller folder 
+# Path to all the files (*.gz) in the haplotypecaller folder, have citation
+# marks around the path " ". 
 path = sys.argv[1]
 
 # Path to the output folder
