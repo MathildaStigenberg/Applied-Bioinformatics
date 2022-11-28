@@ -12,16 +12,16 @@
 module load bioinfo-tools
 module load GATK/4.1.4.1
 
-# Path to the input folder, all the mtdna bam-files (*bam) 
-input_folder=${1}
+# Path to the reference .fa
+ref=${1}
 
-# Path to the reference .fa 
-ref=${2}
+# Path to the input folder, all the mtdna bam-files (*bam), should be in citation marks in command line " " 
+input_folder=${2}
 
 # Path to the output folder, where the variant calling haplotypecaller files will be stored  
 output=${3}
 
-for bamfile in ${input_folder};
+for bamfile in $input_folder;
 do
 	gatk --java-options '-Xmx4g' HaplotypeCaller \
 	    --emit-ref-confidence GVCF \
@@ -41,8 +41,12 @@ do
             --annotation-group AS_StandardAnnotation \
             --annotation-group StandardHCAnnotation \
             --do-not-run-physical-phasing \
-	    -R $ref \
+            --sample-ploidy 1 \
+	    -R ${1} \
 	    -I $bamfile \
 	    -L MtDNA \
-	    -O ${output}/$(basename ${bamfile%.*}).g.vcf.gz
+	    -O ${3}/$(basename ${bamfile%.*}).g.vcf.gz
 done 
+
+
+
