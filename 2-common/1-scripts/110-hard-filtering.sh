@@ -30,6 +30,8 @@ bcftools filter -O u --set-GTs . --exclude 'FORMAT/FT ~ "DP_min_depth"' -o tempo
 bcftools filter -O u --exclude 'FILTER != "PASS"' -o temporary.vcf.gz temporary.vcf.gz
  
 bcftools view -O v --min-af 0.000001 --max-af 0.999999 -o temporary.vcf.gz temporary.vcf.gz
+
+bcftools view -O v -t ^MtDNA:13329-13794 -o temporary.vcf.gz temporary.vcf.gz 
  
 vcftools --freq --gzvcf temporary.vcf.gz --out $freq
  
