@@ -1,4 +1,17 @@
 #!/bin/bash -l
+#SBATCH -A snic2022-5-408
+#SBATCH -p core
+#SBATCH -n 4
+#SBATCH -t 30:00
+#SBATCH -J 109-soft-filtering
+#SBATCH -o 109-soft-filtering.output
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user mathilda.stigenberg.5156@student.uu.se
+
+# Load modules
+module load bioinfo-tools
+module load GATK/4.1.4.1
+module load bcftools 
 
 # Path to the input file, the jointly-genotyped .vcf file obtained from the genotypeGVCFs script 
 input=${1}
