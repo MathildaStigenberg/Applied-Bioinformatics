@@ -15,7 +15,7 @@ module load GATK/4.1.4.1
 # Path to the reference .fa 
 ref=${1}
 
-# Path to the database folder, created from the genomicsDB script
+# Path to the database folder, created from the genomicsDB script. Have citation marks " " around the path. 
 database=${2}
 
 # The path to the output file .vcf that will be created 
