@@ -76,7 +76,7 @@ for (i in c(6506:7735)){
   genes[[i]] <- "ND4"
 }
 for (i in c(7736:7844)){
-  genes[[i]] <- "Intergenic-region"
+  genes[[i]] <- "misc feature"
 }
 for (i in c(7845:9422)){
   genes[[i]] <- "COX1"
