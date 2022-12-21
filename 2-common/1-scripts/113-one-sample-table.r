@@ -6,7 +6,7 @@ library("xtable")
 
 args <- commandArgs(trailingOnly=TRUE)
 
-# The r-script (112-genes.r)  which generates a dictionary with all sites as keys and genes as values
+# The r-script which generates a dictionary with all sites as keys and genes as values
 gene_script <- args[1]
 
 # The mtdna reference of c. elegans, a fa. file 
@@ -66,14 +66,60 @@ for (i in 1:len){
   if (data_vcf$gt$gt_GT[i] == 1 & data_vcf$gt$Indiv[i] == sample){
     for (j in data_vcf$gt$POS[i]){
       if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) > 1){
-        seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
-        seq_right <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])+6)]))
+        if (j < 9){
+          left <- 8-j
+          seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
+          seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
+          seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
+        }
+        else {
+          seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
+        }
+        if (j > (length(fasta)-8)){
+          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
+            left <- 8-(length(fasta)-j)
+            seq_ending <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):length(fasta)]))
+            seq_beginning <- gsub(", ", "", toString(fasta[1:(left+(nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-2))]))
+            seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
+          }
+          else {
+            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
+            seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
+          }
+        }
+        else {
+          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
+            seq_right <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])+6)]))
+          }
+          else {
+            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
+            seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
+          }
+        }
         sequence <- sprintf("%s[...]%s", toupper(seq_left), toupper(seq_right))
         Context <- append(Context, sequence)
       }
       else {
-        seq <- gsub(", ", "", toString(fasta[(j-8):(j+8)]))
-        Context <- append(Context, toupper(seq))
+        if (j < 9){
+          left <- 8-j
+          seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
+          seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
+          seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
+        }
+        else {
+          seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
+        }
+        if (j > (length(fasta)-8)){
+          left <- 8-(length(fasta)-j)
+          seq_ending <- gsub(", ", "", toString(fasta[(j+1):length(fasta)]))
+          seq_beginning <- gsub(", ", "", toString(fasta[1:left]))
+          seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
+        }
+        else {
+          seq_right <- gsub(", ", "", toString(fasta[(j+1):(j+8)]))
+        }
+        sequence <- sprintf("%s%s", toupper(seq_left), toupper(seq_right))
+        Context <- append(Context, sequence)
       }
       Isotype <- append(Isotype, data_vcf$gt$Indiv[i])
       Position <- append(Position, j)
@@ -117,6 +163,5 @@ html_table <- print(xtable(info_table, digits = 4), type = "HTML", include.rowna
 
 file.create(output_table)
 write.table(html_table, output_table, row.names = FALSE, col.names = FALSE, quote=FALSE)
-
 
 
