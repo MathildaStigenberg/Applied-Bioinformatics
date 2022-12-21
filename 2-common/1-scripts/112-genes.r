@@ -111,3 +111,6 @@ for (i in c(11691:13274)){
 for (i in c(13275:13328)){
   genes[[i]] <- "tRNA-Ala"
 }
+for (i in c(13329:13794)){
+  genes[[i]] <- "misc feature"
+}
