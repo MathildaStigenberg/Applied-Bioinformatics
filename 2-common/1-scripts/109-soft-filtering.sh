@@ -6,12 +6,12 @@
 #SBATCH -J 109-soft-filtering
 #SBATCH -o 109-soft-filtering.output
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user mathilda.stigenberg.5156@student.uu.se
+#SBATCH --mail-user hanna.hyllander.8450@student.uu.se
 
 # Load modules
 module load bioinfo-tools
 module load GATK/4.1.4.1
-module load bcftools 
+module load bcftools/1.14 
 
 # Path to the input file, the jointly-genotyped .vcf file obtained from the genotypeGVCFs script 
 input=${1}
@@ -36,7 +36,7 @@ gatk --java-options "-Xmx4g" \
             VariantFiltration \
             -R $ref \
             --variant $input \
-            --genotype-filter-expression "DP < 100.0"    --genotype-filter-name "DP_min_depth" \
+            --genotype-filter-expression "DP < 5.0"    --genotype-filter-name "DP_min_depth" \
             --filter-expression "QUAL < 30.0"                --filter-name "QUAL_quality" \
             --filter-expression "FS > 100.0"          --filter-name "FS_fisherstrand" \
             --filter-expression "QD < 20.0"     --filter-name "QD_quality_by_depth" \
