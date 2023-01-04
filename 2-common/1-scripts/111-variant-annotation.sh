@@ -17,11 +17,7 @@ input=${1}
 
 #the output files will have the suffix .ann.vcf and be stored in our result folder
 output=${2}
-#lägg till .bed-file
-#Variant annotation with snpEff
-#-ud 0 meaning that the upstream and downstream size is 0
-#-fi is for annotating selecting intervals by having a .bed-file, and in this case we don't want to annotate the D-loop 
-# -c because we are not running the script in snpEff
+
+#-ud 0 meaning that the upstream and downstream size is 0, -c because we are not running the script in snpEff
 java -Xmx8g -jar $SNPEFF_ROOT/snpEff.jar eff -no-upstream -no-downstream -ud 0 -c $SNPEFF_ROOT/snpEff.config -v c_elegans.PRJNA13758.WS283 $input > $output  
-#c_elegans.PRJNA13758.WS283
-#Caenorhabditis_elegans
+
