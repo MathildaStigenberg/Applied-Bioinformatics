@@ -27,14 +27,18 @@ fasta <- ref$MtDNA
 
 vcf <- read.vcfR(vcf_file)
 
+data_vcf_everything <- vcfR2tidy(vcf, single_frame = TRUE)
+
 data_vcf <- vcfR2tidy(vcf)
+
+all_data <- data.frame(data_vcf_everything$dat)
 
 data_vcf_gt <- data.frame(data_vcf$gt)
 data_vcf_fix <- data.frame(data_vcf$fix)
 data_vcf_meta <- data.frame(data_vcf$meta)
 
 #extracting reads variant from the second column in AD
-data <- as_tibble(data_vcf_gt)
+data <- as_tibble(all_data)
 ad_data <- data %>% pull(gt_AD)
 reads_variant <- word(ad_data,2,sep=",")
 #extracting DP from data_vcf_gt
@@ -54,7 +58,7 @@ Frequency <- c()
 Context <- c()
 Type <- c()
 
-data_vcf_gt$frequency <- freq_adjusted
+all_data$frequency <- freq_adjusted
 
 line_break_function <- function(x){
   gsub("$<$br$>$","<br>",x)
@@ -62,105 +66,106 @@ line_break_function <- function(x){
 
 options(xtable.sanitize.text.function = line_break_function)
 
-data_group <- data_vcf_gt %>% group_by(POS, gt_GT) %>% dplyr::summarize(frequency = paste(sprintf("%.4f",frequency), collapse = "<br>"), samples = paste(Indiv, collapse = "<br>")) %>% as.data.frame()
+data_group <- all_data %>% group_by(POS, gt_GT, REF, ALT) %>% dplyr::summarize(frequency = paste(sprintf("%.4f",frequency), collapse = "<br>"), samples = paste(Indiv, collapse = "<br>")) %>% as.data.frame()
 
 data_group <- subset(data_group, gt_GT == 1)
 
-data_vcf_fix[c("base","effect")] <- str_split_fixed(data_vcf_fix$ANN,"[|]",3)
+data_group[c("base","effect")] <- str_split_fixed(data_vcf_fix$ANN,"[|]",3)
 
+data_group <- data_group[!duplicated(data_group[c("POS", "REF", "ALT", "samples")]),]
 
-len <- length(data_group$POS)
+data_group <- cbind(ID = 1:nrow(data_group),data_group)
+
+len <- length(data_group$ID)
 for (i in 1:len){
-  if (data_group$gt_GT[i] == 1){
-    for (j in data_group$POS[i]){
-      if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) > 1){
-        if (j < 9){
-          left <- 8-j
-          seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
-          seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
-          seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
-        }
-        else {
-          seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
-        }
-        if (j > (length(fasta)-8)){
-          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
-            left <- 8-(length(fasta)-j)
-            seq_ending <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):length(fasta)]))
-            seq_beginning <- gsub(", ", "", toString(fasta[1:(left+(nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-2))]))
-            seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
-          }
-          else {
-            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
-            seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
-          }
-        }
-        else {
-          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
-            seq_right <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])+6)]))
-          }
-          else {
-            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
-            seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
-          }
-        }
-        sequence <- sprintf("%s[...]%s", toupper(seq_left), toupper(seq_right))
-        Context <- append(Context, sequence)
+  for (j in data_group$POS[i]){
+    if (nchar(data_group$REF[data_group$ID == i]) > 1){
+      if (j < 9){
+        left <- 8-j
+        seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
+        seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
+        seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
       }
       else {
-        if (j < 9){
-          left <- 8-j
-          seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
-          seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
-          seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
-        }
-        else {
-          seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
-        }
-        if (j > (length(fasta)-8)){
+        seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
+      }
+      if (j > (length(fasta)-8)){
+        if ((length(fasta)-j) > nchar(data_group$REF[data_group$ID == i])){
           left <- 8-(length(fasta)-j)
-          seq_ending <- gsub(", ", "", toString(fasta[(j+1):length(fasta)]))
-          seq_beginning <- gsub(", ", "", toString(fasta[1:left]))
+          seq_ending <- gsub(", ", "", toString(fasta[(j+nchar(data_group$REF[data_group$ID == i])):length(fasta)]))
+          seq_beginning <- gsub(", ", "", toString(fasta[1:(left+(nchar(data_group$REF[data_group$ID == i])-2))]))
           seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
         }
         else {
-          seq_right <- gsub(", ", "", toString(fasta[(j+1):(j+8)]))
+          left <- nchar(data_group$REF[data_group$ID == i])-(length(fasta)-j)
+          seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
         }
-        sequence <- sprintf("%s%s", toupper(seq_left), toupper(seq_right))
-        Context <- append(Context, sequence)
-      }
-      Isotype <- append(Isotype, data_group$samples[data_group$POS == j])
-      Position <- append(Position, j)
-      variant <- sprintf("%s->%s", data_vcf$fix$REF[data_vcf$fix$POS == j], data_vcf$fix$ALT[data_vcf$fix$POS == j])
-      Mutation <- append(Mutation, variant)
-      annotation_effect <- gsub("_", " ", data_vcf_fix$effect[data_vcf_fix$POS == j])
-      annotation_effect <- gsub("&", " & ", annotation_effect)
-      annotation_effect <- gsub("variant", "", annotation_effect)
-      Effect <- append(Effect, annotation_effect)
-      Frequency <- append(Frequency, data_group$frequency[data_group$POS == j])
-      if (!is.null(genes[[j]])){
-        Gene <- append(Gene, genes[[j]])
       }
       else {
-        Gene <- append(Gene, " ")
-      }
-      if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) == 1 & nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j]) == 1){
-        if ((data_vcf$fix$REF[data_vcf$fix$POS == j] == "A" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "G") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "C" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "T") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "G" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "A") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "T" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "C")){
-          Type <- append(Type, "transition")
+        if ((length(fasta)-j) > nchar(data_group$REF[data_group$ID == i])){
+          seq_right <- gsub(", ", "", toString(fasta[(j+nchar(data_group$REF[data_group$ID == i])):(j+nchar(data_group$REF[data_group$ID == i])+6)]))
         }
         else {
-          Type <- append(Type, "transversion")
+          left <- nchar(data_group$REF[data_group$ID == i])-(length(fasta)-j)
+          seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
         }
       }
-      else if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) > nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j])) {
-        Type <- append(Type, "deletion")
-      }
-      else if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) < nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j])) {
-        Type <- append(Type, "insertion")
+      sequence <- sprintf("%s[...]%s", toupper(seq_left), toupper(seq_right))
+      Context <- append(Context, sequence)
+    }
+    else {
+      if (j < 9){
+        left <- 8-j
+        seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
+        seq_ending <- gsub(", ", "", toString(fasta[(length(fasta)-left):length(fasta)]))
+        seq_left <- sprintf("%s%s", seq_ending, seq_beginning)
       }
       else {
-        Type <- append(Type, " ")
+        seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
       }
+      if (j > (length(fasta)-8)){
+        left <- 8-(length(fasta)-j)
+        seq_ending <- gsub(", ", "", toString(fasta[(j+1):length(fasta)]))
+        seq_beginning <- gsub(", ", "", toString(fasta[1:left]))
+        seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
+      }
+      else {
+        seq_right <- gsub(", ", "", toString(fasta[(j+1):(j+8)]))
+      }
+      sequence <- sprintf("%s%s", toupper(seq_left), toupper(seq_right))
+      Context <- append(Context, sequence)
+    }
+    Isotype <- append(Isotype, data_group$samples[data_group$ID == i])
+    Position <- append(Position, j)
+    variant <- sprintf("%s->%s", data_group$REF[data_group$ID == i], data_group$ALT[data_group$ID == i])
+    Mutation <- append(Mutation, variant)
+    annotation_effect <- gsub("_", " ", data_group$effect[data_group$ID == i])
+    annotation_effect <- gsub("&", " & ", annotation_effect)
+    annotation_effect <- gsub("variant", "", annotation_effect)
+    Effect <- append(Effect, annotation_effect)
+    Frequency <- append(Frequency, data_group$frequency[data_group$ID == i])
+    if (!is.null(genes[[j]])){
+      Gene <- append(Gene, genes[[j]])
+    }
+    else {
+      Gene <- append(Gene, " ")
+    }
+    if (nchar(data_group$REF[data_group$ID == i]) == 1 & nchar(data_group$ALT[data_group$ID == i]) == 1){
+      if ((data_group$REF[data_group$ID == i] == "A" & data_group$ALT[data_group$ID == i] == "G") | (data_group$REF[data_group$ID == i] == "C" & data_group$ALT[data_group$ID == i] == "T") | (data_group$REF[data_group$ID == i] == "G" & data_group$ALT[data_group$ID == i] == "A") | (data_group$REF[data_group$ID == i] == "T" & data_group$ALT[data_group$ID == i] == "C")){
+        Type <- append(Type, "transition")
+      }
+      else {
+        Type <- append(Type, "transversion")
+      }
+    }
+    else if (nchar(data_group$REF[data_group$ID == i]) > nchar(data_group$ALT[data_group$ID == i])) {
+      Type <- append(Type, "deletion")
+    }
+    else if (nchar(data_group$REF[data_group$ID == i]) < nchar(data_group$ALT[data_group$ID == i])) {
+      Type <- append(Type, "insertion")
+    }
+    else {
+      Type <- append(Type, " ")
     }
   }
 }
@@ -171,3 +176,4 @@ html_table <- print(xtable(info_table, digits = 4), type = "HTML", include.rowna
 
 file.create(output_table)
 write.table(html_table, output_table, row.names = FALSE, col.names = FALSE, quote=FALSE)
+
