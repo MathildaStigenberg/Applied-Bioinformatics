@@ -3,6 +3,7 @@ library("tidyverse")
 library("seqinr")
 library("stringr")
 library("xtable")
+library("dplyr")
 
 args <- commandArgs(trailingOnly=TRUE)
 
@@ -29,14 +30,18 @@ fasta <- ref$MtDNA
 
 vcf <- read.vcfR(vcf_file)
 
+data_vcf_everything <- vcfR2tidy(vcf, single_frame = TRUE)
+
 data_vcf <- vcfR2tidy(vcf)
+
+all_data <- data.frame(data_vcf_everything$dat)
 
 data_vcf_gt <- data.frame(data_vcf$gt)
 data_vcf_fix <- data.frame(data_vcf$fix)
 data_vcf_meta <- data.frame(data_vcf$meta)
 
 #extracting reads variant from the second column in AD
-data <- as_tibble(data_vcf_gt)
+data <- as_tibble(all_data)
 ad_data <- data %>% pull(gt_AD)
 reads_variant <- word(ad_data,2,sep=",")
 #extracting DP from data_vcf_gt
@@ -56,16 +61,30 @@ Frequency <- c()
 Context <- c()
 Type <- c()
 
-data_vcf_fix[c("base","effect")] <- str_split_fixed(data_vcf_fix$ANN,"[|]",3)
+all_data$frequency <- freq_adjusted
 
-len <- length(data_vcf$gt$gt_GT)
+relevant_data <- all_data[ , c("POS", "gt_GT", "REF", "ALT", "Indiv", "frequency")] 
+
+relevant_data <- merge(relevant_data, data_vcf_fix[, c("POS", "ALT", "ANN")], by.x = c("POS", "ALT"), by.y = c("POS", "ALT"))
+
+relevant_data <- relevant_data[order(relevant_data$POS),]
+
+relevant_data[c("base","effect")] <- str_split_fixed(relevant_data$ANN,"[|]",3)
+
+relevant_data <- relevant_data[!duplicated(relevant_data[c("POS", "REF", "ALT", "Indiv")]),]
+
+relevant_data <- subset(relevant_data, gt_GT == 1)
+
+relevant_data <- cbind(ID = 1:nrow(relevant_data),relevant_data)
+
+len <- length(relevant_data$ID)
 for (i in 1:len){
-  if (is.na(data_vcf$gt$gt_GT[i])){
+  if (is.na(relevant_data$gt_GT[i])){
     next
   }
-  if (data_vcf$gt$gt_GT[i] == 1 & data_vcf$gt$Indiv[i] == sample){
-    for (j in data_vcf$gt$POS[i]){
-      if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) > 1){
+  if (relevant_data$Indiv[i] == sample){
+    for (j in relevant_data$POS[i]){
+      if (nchar(relevant_data$REF[relevant_data$ID == i]) > 1){
         if (j < 9){
           left <- 8-j
           seq_beginning <- gsub(", ", "", toString(fasta[1:j]))
@@ -76,23 +95,23 @@ for (i in 1:len){
           seq_left <- gsub(", ", "", toString(fasta[(j-8):j]))
         }
         if (j > (length(fasta)-8)){
-          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
+          if ((length(fasta)-j) > nchar(relevant_data$REF[relevant_data$ID == i])){
             left <- 8-(length(fasta)-j)
-            seq_ending <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):length(fasta)]))
-            seq_beginning <- gsub(", ", "", toString(fasta[1:(left+(nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-2))]))
+            seq_ending <- gsub(", ", "", toString(fasta[(j+nchar(relevant_data$REF[relevant_data$ID == i])):length(fasta)]))
+            seq_beginning <- gsub(", ", "", toString(fasta[1:(left+(nchar(relevant_data$REF[relevant_data$ID == i])-2))]))
             seq_right <- sprintf("%s%s", seq_ending, seq_beginning)
           }
           else {
-            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
+            left <- nchar(relevant_data$REF[relevant_data$ID == i])-(length(fasta)-j)
             seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
           }
         }
         else {
-          if ((length(fasta)-j) > nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])){
-            seq_right <- gsub(", ", "", toString(fasta[(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])):(j+nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])+6)]))
+          if ((length(fasta)-j) > nchar(relevant_data$REF[relevant_data$ID == i])){
+            seq_right <- gsub(", ", "", toString(fasta[(j+nchar(relevant_data$REF[relevant_data$ID == i])):(j+nchar(relevant_data$REF[relevant_data$ID == i])+6)]))
           }
           else {
-            left <- nchar(data_vcf$fix$REF[data_vcf$fix$POS == j])-(length(fasta)-j)
+            left <- nchar(relevant_data$REF[relevant_data$ID == i])-(length(fasta)-j)
             seq_right <- gsub(", ", "", toString(fasta[left:(left+6)]))
           }
         }
@@ -121,33 +140,33 @@ for (i in 1:len){
         sequence <- sprintf("%s%s", toupper(seq_left), toupper(seq_right))
         Context <- append(Context, sequence)
       }
-      Isotype <- append(Isotype, data_vcf$gt$Indiv[i])
+      Isotype <- append(Isotype, relevant_data$Indiv[i])
       Position <- append(Position, j)
-      variant <- sprintf("%s->%s", data_vcf$fix$REF[data_vcf$fix$POS == j], data_vcf$fix$ALT[data_vcf$fix$POS == j])
+      variant <- sprintf("%s->%s", relevant_data$REF[relevant_data$ID == i], relevant_data$ALT[relevant_data$ID == i])
       Mutation <- append(Mutation, variant)
-      annotation_effect <- gsub("_", " ", data_vcf_fix$effect[data_vcf_fix$POS == j])
+      annotation_effect <- gsub("_", " ", relevant_data$effect[relevant_data$ID == i])
       annotation_effect <- gsub("&", " & ", annotation_effect)
       annotation_effect <- gsub("variant", "", annotation_effect)
       Effect <- append(Effect, annotation_effect)
-      Frequency <- append(Frequency, freq_adjusted[i])
+      Frequency <- append(Frequency, relevant_data$frequency[relevant_data$ID == i])
       if (!is.null(genes[[j]])){
         Gene <- append(Gene, genes[[j]])
       }
       else {
         Gene <- append(Gene, " ")
       }
-      if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) == 1 & nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j]) == 1){
-        if ((data_vcf$fix$REF[data_vcf$fix$POS == j] == "A" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "G") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "C" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "T") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "G" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "A") | (data_vcf$fix$REF[data_vcf$fix$POS == j] == "T" & data_vcf$fix$ALT[data_vcf$fix$POS == j] == "C")){
+      if (nchar(relevant_data$REF[relevant_data$ID == i]) == 1 & nchar(relevant_data$ALT[relevant_data$ID == i]) == 1){
+        if ((relevant_data$REF[relevant_data$ID == i] == "A" & relevant_data$ALT[relevant_data$ID == i] == "G") | (relevant_data$REF[relevant_data$ID == i] == "C" & relevant_data$ALT[relevant_data$ID == i] == "T") | (relevant_data$REF[relevant_data$ID == i] == "G" & relevant_data$ALT[relevant_data$ID == i] == "A") | (relevant_data$REF[relevant_data$ID == i] == "T" & relevant_data$ALT[relevant_data$ID == i] == "C")){
           Type <- append(Type, "transition")
         }
         else {
           Type <- append(Type, "transversion")
         }
       }
-      else if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) > nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j])) {
+      else if (nchar(relevant_data$REF[relevant_data$ID == i]) > nchar(relevant_data$ALT[relevant_data$ID == i])) {
         Type <- append(Type, "deletion")
       }
-      else if (nchar(data_vcf$fix$REF[data_vcf$fix$POS == j]) < nchar(data_vcf$fix$ALT[data_vcf$fix$POS == j])) {
+      else if (nchar(relevant_data$REF[relevant_data$ID == i]) < nchar(relevant_data$ALT[relevant_data$ID == i])) {
         Type <- append(Type, "insertion")
       }
       else {
