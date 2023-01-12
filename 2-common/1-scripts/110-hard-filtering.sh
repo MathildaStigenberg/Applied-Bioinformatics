@@ -5,15 +5,13 @@
 #SBATCH -n 1
 #SBATCH -t 15:00
 #SBATCH -J 110-hard-filtering
-#SBATCH -o 110-hard-filtering.output
+#SBATCH -o 110-hard-filtering-multiallelic.output
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user mathilda.stigenberg.5156@student.uu.se
 #SBATCH --qos=short
 
 # Load modules
-module load bioinfo-tools
-module load vcftools/0.1.16
-module load bcftools/1.14
+ml bioinfo-tools vcftools/0.1.16 bcftools/1.14 &&
 
 # The input is the path to the soft-filtered soft-filter.vcf.gz file 
 input=${1}
@@ -24,7 +22,7 @@ hard_filt=${3}
 # The third output is the path to a statistics .stats.txt file 
 stats=${4}
 
-bcftools view -m2 -M2 --trim-alt-alleles -O z --regions MtDNA -o temporary1.vcf.gz $input
+bcftools view --trim-alt-alleles -O z --regions MtDNA -o temporary1.vcf.gz $input
 bcftools index temporary1.vcf.gz
 bcftools index --tbi temporary1.vcf.gz
 
